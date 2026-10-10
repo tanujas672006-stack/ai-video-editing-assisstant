@@ -2901,42 +2901,220 @@ animation: none !important;
     grid-template-columns: 1fr !important; /* Forces 1 card per row on mobile */
   }
 }
-/* --- Mobile Fixes for the Editor Dashboard --- */
+
+/* --- Mobile Editor Alignment Fix --- */
 @media (max-width: 768px) {
-  /* Allow the body and main editor wrapper to fit the screen width */
-  body, html {
-    overflow-x: hidden;
-    width: 100%;
-  }
+    html,
+    body {
+        width: 100%;
+        max-width: 100%;
+        overflow-x: hidden;
+    }
 
-  /* If your editor uses a side-by-side flex container, stack them */
-  .editor-main, .editor-container, .workspace {
-    flex-direction: column !important;
-    width: 100% !important;
-    padding: 5px !important;
-  }
+    .app {
+        width: 100%;
+        height: 100vh;
+        height: 100dvh;
+        overflow: hidden;
+    }
 
-  /* Make the left tool sidebar horizontal on mobile instead of vertical cutting off */
-  .sidebar, .tools-sidebar {
-    width: 100% !important;
-    flex-direction: row !important;
-    overflow-x: auto;
-    position: relative !important;
-    height: auto !important;
-    padding: 5px;
-    background: #1a1a1a;
-  }
+    .topbar {
+        width: 100%;
+        padding: 0 8px;
+        gap: 6px;
+    }
 
-  /* Ensure video player and preview match mobile width */
-  video, .video-preview-container, .preview-box {
-    width: 100% !important;
-    max-width: 100% !important;
-    height: auto !important;
-  }
+    .brand {
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
 
-  /* Fix timeline and buttons scaling */
-  .timeline-container, .timeline-section {
-    width: 100% !important;
-    overflow-x: auto;
-  }
+    .top-actions {
+        min-width: 0;
+        gap: 4px;
+    }
+
+    .editor {
+        width: 100%;
+        height: calc(100vh - 58px);
+        height: calc(100dvh - 58px);
+        min-width: 0;
+        display: flex;
+        flex-direction: row;
+        overflow: hidden;
+    }
+
+    .toolbar {
+        width: 56px;
+        min-width: 56px;
+        flex-shrink: 0;
+        padding: 8px 4px;
+    }
+
+    .tool {
+        width: 48px;
+        max-width: 100%;
+        flex-shrink: 0;
+    }
+
+    .side-panel {
+        position: absolute;
+        top: 58px;
+        bottom: 0;
+        left: 56px;
+        width: min(260px, calc(100vw - 56px));
+        min-width: 0;
+        max-width: calc(100vw - 56px);
+        z-index: 100;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+
+    .workspace {
+        flex: 1;
+        width: 0;
+        min-width: 0;
+        height: 100%;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+
+    .preview {
+        flex: 1;
+        min-width: 0;
+        min-height: 0;
+        width: 100%;
+        padding: 8px;
+        overflow: hidden;
+    }
+
+    #video {
+        display: block;
+        max-width: 100%;
+        max-height: 100%;
+        width: auto;
+        height: auto;
+        object-fit: contain;
+    }
+
+    #video.aspect-16-9,
+    #video.aspect-9-16,
+    #video.aspect-9-10,
+    #video.aspect-1-1,
+    #video.aspect-4-5 {
+        max-width: 100%;
+        max-height: 100%;
+    }
+
+    .player-bar {
+        width: 100%;
+        min-width: 0;
+        gap: 8px;
+        padding: 0 10px;
+    }
+
+    #time {
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: 11px;
+    }
+
+    .timeline {
+        width: 100%;
+        min-width: 0;
+        height: 210px;
+        flex-shrink: 0;
+    }
+
+    .timeline-toolbar {
+        min-width: 0;
+        gap: 6px;
+        padding: 0 8px;
+    }
+
+    .timeline-title {
+        flex: 1;
+        min-width: 0;
+        gap: 6px;
+    }
+
+    #status {
+        max-width: 100px;
+    }
+
+    .timeline-actions {
+        flex-shrink: 0;
+        gap: 5px;
+    }
+
+    .delete-clip,
+    #deleteSelected {
+        padding: 0 8px;
+        font-size: 10px;
+    }
+
+    .timeline-scroll {
+        width: 100%;
+        min-width: 0;
+        overflow-x: auto;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        padding: 10px;
+    }
+
+    .timeline-content,
+    .timeline-row {
+        width: max-content;
+        min-width: max-content;
+    }
+
+    .timeline-tracks-container,
+    .video-track,
+    .audio-track {
+        min-width: 480px;
+    }
+
+    .timeline-clip {
+        min-width: 120px;
+    }
+}
+
+@media (max-width: 400px) {
+    .brand {
+        font-size: 12px;
+    }
+
+    .button {
+        padding: 0 6px;
+        font-size: 10px;
+    }
+
+    .toolbar {
+        width: 52px;
+        min-width: 52px;
+    }
+
+    .tool {
+        width: 44px;
+    }
+
+    .side-panel {
+        left: 52px;
+        width: calc(100vw - 52px);
+        max-width: calc(100vw - 52px);
+    }
+
+    .timeline-title strong {
+        font-size: 12px;
+    }
+
+    #status {
+        max-width: 75px;
+    }
 }
