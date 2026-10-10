@@ -8,7 +8,7 @@ requests
 email-validator
 gunicorn
 openai
-google-generativeai
+google-genai
 moviepy
 opencv-python-headless
 pillow
