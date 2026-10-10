@@ -2901,3 +2901,42 @@ animation: none !important;
     grid-template-columns: 1fr !important; /* Forces 1 card per row on mobile */
   }
 }
+/* --- Mobile Fixes for the Editor Dashboard --- */
+@media (max-width: 768px) {
+  /* Allow the body and main editor wrapper to fit the screen width */
+  body, html {
+    overflow-x: hidden;
+    width: 100%;
+  }
+
+  /* If your editor uses a side-by-side flex container, stack them */
+  .editor-main, .editor-container, .workspace {
+    flex-direction: column !important;
+    width: 100% !important;
+    padding: 5px !important;
+  }
+
+  /* Make the left tool sidebar horizontal on mobile instead of vertical cutting off */
+  .sidebar, .tools-sidebar {
+    width: 100% !important;
+    flex-direction: row !important;
+    overflow-x: auto;
+    position: relative !important;
+    height: auto !important;
+    padding: 5px;
+    background: #1a1a1a;
+  }
+
+  /* Ensure video player and preview match mobile width */
+  video, .video-preview-container, .preview-box {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+  }
+
+  /* Fix timeline and buttons scaling */
+  .timeline-container, .timeline-section {
+    width: 100% !important;
+    overflow-x: auto;
+  }
+}
