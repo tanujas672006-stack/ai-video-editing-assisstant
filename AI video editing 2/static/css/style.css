@@ -2851,3 +2851,53 @@ animation: none !important;
     transition: none;
   }
 }
+/* Stack side-by-side controls on mobile */
+@media (max-width: 768px) {
+  .editor-container {
+    flex-direction: column !important; /* Stacks player on top of controls */
+    width: 100% !important;
+    padding: 10px !important;
+  }
+
+  video, .video-preview {
+    width: 100% !important;   /* Prevents video from overflowing screen width */
+    height: auto !important;  /* Keeps video aspect ratio correct */
+  }
+
+  .editing-tools, .sidebar {
+    width: 100% !important;   /* Full width for buttons and tools below video */
+  }
+}
+/* --- Mobile Responsive Fixes --- */
+@media (max-width: 768px) {
+  /* Stack the hero content and decorative animation vertically */
+  .hero {
+    flex-direction: column !important;
+    text-align: center;
+    padding: 20px 15px !important;
+  }
+
+  .hero-content, 
+  .motion-visual {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* Make sure buttons stack or fit nicely */
+  .hero-buttons {
+    justify-content: center;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .hero-buttons a {
+    width: 100%;
+    text-align: center;
+  }
+
+  /* Prevent feature cards and steps from squishing */
+  .features, 
+  .steps {
+    grid-template-columns: 1fr !important; /* Forces 1 card per row on mobile */
+  }
+}
