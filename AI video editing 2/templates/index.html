@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>AI Video Editor</title>
+
+<link rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}">
+
+</head>
+
+<body>
+
+<main>
+
+<!-- HERO -->
+<section class="hero">
+
+    <div class="hero-content">
+
+        <div class="badge">
+            ✦ Smart Video Editing Made Simple
+        </div>
+
+        <h1>
+            Create Better Videos With AI
+            <br>
+            <span>Assistance</span>
+        </h1>
+
+        <p>
+            Upload your videos, edit clips, manage audio,
+            apply filters and use AI-powered tools to create
+            content ready for social media.
+        </p>
+
+        <div class="hero-buttons">
+
+            <a href="{{ url_for('editor') }}"
+               class="primary-button">
+                Start Editing →
+            </a>
+
+            <a href="#features"
+               class="secondary-button">
+                Explore Features
+            </a>
+
+        </div>
+
+    </div>
+
+    <!-- Decorative editor preview; no extra library needed -->
+    <div class="motion-visual" aria-hidden="true">
+
+        <div class="motion-orb"></div>
+        <div class="motion-ring"></div>
+        <div class="motion-ring ring-two"></div>
+
+        <div class="motion-window">
+
+            <div class="motion-window-top">
+                <div class="motion-window-dots">
+                    <i></i><i></i><i></i>
+                </div>
+                <span>CREATIVE STUDIO</span>
+                <span>✦ AI</span>
+            </div>
+
+            <div class="motion-screen">
+                <div class="motion-play">▶</div>
+                <div class="motion-screen-label">
+                    VIDEO PREVIEW / 01
+                </div>
+            </div>
+
+            <div class="motion-timeline">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+
+            <div class="motion-status">
+                <span>EDIT TIMELINE</span>
+                <span>● STUDIO READY</span>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+<!-- FEATURES -->
+<section id="features" class="features-section">
+
+    <div class="section-title">
+        <h2>Everything You Need</h2>
+        <p>
+            A simple workspace for creating videos faster.
+        </p>
+    </div>
+
+
+    <div class="features">
+
+        <div class="feature-card">
+            <div class="feature-icon">🎬</div>
+            <h3>Combine Videos</h3>
+            <p>
+                Arrange multiple clips into one continuous video.
+            </p>
+        </div>
+
+
+        <div class="feature-card">
+            <div class="feature-icon">✂️</div>
+            <h3>Trim & Split</h3>
+            <p>
+                Remove unwanted sections and split clips precisely.
+            </p>
+        </div>
+
+
+        <div class="feature-card">
+            <div class="feature-icon">🎵</div>
+            <h3>Audio</h3>
+            <p>
+                Add music and control your video's audio.
+            </p>
+        </div>
+
+
+        <div class="feature-card">
+            <div class="feature-icon">🎨</div>
+            <h3>Filters</h3>
+            <p>
+                Apply visual effects to your video preview and export.
+            </p>
+        </div>
+
+
+        <div class="feature-card">
+            <div class="feature-icon">🤖</div>
+            <h3>AI Assistant</h3>
+            <p>
+                Generate titles, descriptions, captions and hashtags.
+            </p>
+        </div>
+
+
+        <div class="feature-card">
+            <div class="feature-icon">⚡</div>
+            <h3>Export</h3>
+            <p>
+                Create a single finished video from your timeline.
+            </p>
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- HOW IT WORKS -->
+<section class="how-section">
+
+    <div class="section-title">
+        <h2>How It Works</h2>
+        <p>
+            A simple workflow from upload to editing.
+        </p>
+    </div>
+
+
+    <div class="steps">
+
+        <div class="step">
+            <div class="step-number">1</div>
+
+            <h3>Upload</h3>
+
+            <p>
+                Upload one or multiple video clips
+                to your editing workspace.
+            </p>
+        </div>
+
+
+        <div class="step">
+            <div class="step-number">2</div>
+
+            <h3>Edit</h3>
+
+            <p>
+                Arrange clips, trim sections,
+                split videos and apply filters.
+            </p>
+        </div>
+
+
+        <div class="step">
+            <div class="step-number">3</div>
+
+            <h3>Create</h3>
+
+            <p>
+                Use AI tools to generate useful
+                content for your finished video.
+            </p>
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- CTA -->
+<section class="cta">
+
+    <h2>Ready to Start Creating?</h2>
+
+    <p>
+        Open the AI Video Editor and start working
+        on your videos.
+    </p>
+
+    <a href="{{ url_for('editor') }}"
+       class="primary-button">
+        Start Editing →
+    </a>
+
+</section>
+
+</main>
+
+<footer>
+    © 2026 AI Video Editing Assistant
+</footer>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const animatedItems = document.querySelectorAll(".feature-card, .step");
+
+  if ("IntersectionObserver" in window) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("is-visible");
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+
+    animatedItems.forEach((item) => observer.observe(item));
+  } else {
+    animatedItems.forEach((item) => item.classList.add("is-visible"));
+  }
+});
+</script>
+</body>
+</html>
+

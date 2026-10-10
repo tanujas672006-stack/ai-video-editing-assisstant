@@ -1,0 +1,103 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sign Up | AI Video Editor</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 20px;
+      font-family: Arial, sans-serif;
+      color: #fff;
+      background: #10111a;
+    }
+
+    .signup-card {
+      width: 100%;
+      max-width: 400px;
+      padding: 32px;
+      background: #1b1d2b;
+      border: 1px solid #34364b;
+      border-radius: 18px;
+    }
+
+    h1 { margin-top: 0; text-align: center; }
+    p { color: #b8bbd0; text-align: center; }
+
+    label {
+      display: block;
+      margin: 16px 0 8px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #454860;
+      border-radius: 8px;
+      background: #11131e;
+      color: white;
+    }
+
+    button, .google, .login {
+      display: block;
+      width: 100%;
+      margin-top: 16px;
+      padding: 12px;
+      border: 0;
+      border-radius: 8px;
+      text-align: center;
+      text-decoration: none;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    button { background: #7664ff; color: white; }
+    .google { background: white; color: #222; }
+    .login { color: #b8adff; }
+    .message { color: #ffaaaa; }
+  </style>
+</head>
+<body>
+  <main class="signup-card">
+    <h1>Create Account 🚀</h1>
+    <p>Sign up to unlock AI editing and GIF tools.</p>
+
+    {% with messages = get_flashed_messages() %}
+      {% for message in messages %}
+        <p class="message">{{ message }}</p>
+      {% endfor %}
+    {% endwith %}
+
+    <form method="POST" action="{{ url_for('signup') }}">
+      <label for="email">Email</label>
+      <input id="email" type="email" name="email"
+             autocomplete="email" required>
+
+      <label for="password">Password (minimum 8 characters)</label>
+      <input id="password" type="password" name="password"
+             minlength="8" autocomplete="new-password" required>
+
+      <button type="submit">Create Account</button>
+    </form>
+
+    <a class="google" href="{{ url_for('google_login') }}">
+      Sign up with Google
+    </a>
+
+    <a class="login" href="{{ url_for('login') }}">
+      Already have an account? Log in
+    </a>
+
+    <p><a href="{{ url_for('index') }}" style="color:#b8bbd0">
+      Back to editor
+    </a></p>
+  </main>
+</body>
+</html>

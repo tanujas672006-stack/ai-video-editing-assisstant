@@ -1,0 +1,362 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Video Editor</title>
+    <script src="https://unpkg.com/gifshot@0.4.5/dist/gifshot.min.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<div class="app">
+
+    <header class="topbar">
+        <div class="brand">
+            <a href="/">AI Video Editor</a>
+        </div>
+
+        <div class="top-actions">
+            {% if logged_in %}
+                <form method="POST" action="{{ url_for('logout') }}" style="display:inline;">
+                    <button type="submit" class="button secondary">Log Out</button>
+                </form>
+            {% else %}
+                <a href="{{ url_for('login', next='/editor') }}" class="button secondary">Log In</a>
+            {% endif %}
+
+            <button id="saveProject" class="button secondary">Save Project</button>
+
+            <input
+                id="projectInput"
+                type="file"
+                accept=".json,application/json"
+                hidden
+            >
+
+            <button id="exportVideo" class="button primary">Export</button>
+        </div>
+    </header>
+
+    <main class="editor">
+
+        <aside class="toolbar">
+            <button class="tool active" data-panel="media">
+                <span>▣</span><small>Media</small>
+            </button>
+
+            <button class="tool" data-panel="edit">
+                <span>✂</span><small>Edit</small>
+            </button>
+
+            <button class="tool" data-panel="audio">
+                <span>♫</span><small>Audio</small>
+            </button>
+
+            <button class="tool" data-panel="ai">
+                <span>✦</span><small>AI</small>
+            </button>
+
+            <button class="tool" data-panel="gif">
+                <span>GIF</span><small>GIF</small>
+            </button>
+        </aside>
+
+        <aside id="sidePanel" class="side-panel">
+
+            <div class="panel-header">
+                <h2 id="panelTitle">Media</h2>
+                <button id="closePanel" class="close">×</button>
+            </div>
+
+            <section id="mediaPanel" class="panel active">
+                <h3>Media</h3>
+
+                <input id="videoInput" type="file" accept="video/*" multiple hidden>
+                <button id="uploadVideo" class="panel-button">Upload Video</button>
+
+                <input id="audioInput" type="file" accept="audio/*" multiple hidden>
+                <button id="uploadAudio" class="panel-button">Upload Music</button>
+            </section>
+
+            <section id="editPanel" class="panel">
+                <h3>Edit Controls</h3>
+
+                <div class="edit-group">
+                    <h4 class="section-title">Video Clip</h4>
+
+                    <label for="trimStart">Trim Start (s)</label>
+                    <input id="trimStart" type="number" min="0" step="0.1" value="0">
+
+                    <label for="trimEnd">Trim End (s)</label>
+                    <input id="trimEnd" type="number" min="0" step="0.1" value="">
+
+                    <button id="trimVideo" class="panel-button">Apply Trim</button>
+                    <button id="splitVideo" class="panel-button secondary">Split At Playhead</button>
+                    <button id="mergeClips" class="panel-button secondary" style="margin-top:10px;">Merge Adjacent Clips</button>
+                </div>
+
+                <div class="edit-group mt-custom">
+                    <h4 class="section-title">Crop / Aspect Ratio</h4>
+
+                    <label for="cropRatio">Aspect Ratio</label>
+                    <select id="cropRatio" class="panel-select">
+                        <option value="original">Original</option>
+                        <option value="9:16">9:16 — Reels / Stories / TikTok / Shorts</option>
+                        <option value="9:10">9:10 — Portrait</option>
+                        <option value="4:5">4:5 — Portrait</option>
+                        <option value="1:1">1:1 — Square</option>
+                        <option value="16:9">16:9 — Landscape</option>
+                    </select>
+
+                    <button id="applyCrop" class="panel-button">Apply Crop</button>
+                </div>
+            </section>
+
+            <section id="audioPanel" class="panel">
+                <h3>Audio</h3>
+
+                <div class="audio-volume-section">
+                    <label for="volume">Master Volume</label>
+                    <input id="volume" type="range" min="0" max="1" step="0.01" value="1">
+                    <div id="volumeText">100%</div>
+                </div>
+
+                <div class="audio-trim-section">
+                    <h4 class="section-title">Audio Trim</h4>
+
+                    <label for="audioTrimStart">Audio Trim Start (s)</label>
+                    <input id="audioTrimStart" type="number" min="0" step="0.1" value="0">
+
+                    <label for="audioTrimEnd">Audio Trim End (s)</label>
+                    <input id="audioTrimEnd" type="number" min="0" step="0.1" value="">
+
+                    <button id="trimAudio" class="panel-button">Apply Audio Trim</button>
+                </div>
+            </section>
+
+            <section id="aiPanel" class="panel">
+                <h3>AI Assistant</h3>
+
+                {% if logged_in %}
+                    <button class="ai-button" data-type="title">Generate Title</button>
+                    <div id="titleResult" class="result"></div>
+
+                    <button class="ai-button" data-type="description">Generate Description</button>
+                    <div id="descriptionResult" class="result"></div>
+
+                    <button class="ai-button" data-type="hashtags">Generate Hashtags</button>
+                    <div id="hashtagsResult" class="result"></div>
+
+                    <button class="ai-button" data-type="caption">Generate Captions</button>
+                    <div id="captionResult" class="result"></div>
+
+                    <button class="ai-button" data-type="suggestions">Generate Suggestions</button>
+                    <div id="suggestionsResult" class="result"></div>
+                {% else %}
+                    <p class="panel-description">Log in to unlock AI editing tools.</p>
+                    <a class="panel-button" style="display:block;text-align:center;text-decoration:none;" href="{{ url_for('login', next='/editor') }}">Log In to Use AI</a>
+                {% endif %}
+            </section>
+
+            <section id="gifPanel" class="panel">
+                <h3>GIF Maker</h3>
+
+                {% if logged_in %}
+                    <p class="panel-description">Upload images and create an animated GIF.</p>
+
+                    <label for="gifImagesInput" class="file-label panel-button" style="display:block;text-align:center;cursor:pointer;">
+                        Choose Images
+                    </label>
+
+                    <input id="gifImagesInput" type="file" accept="image/*" multiple hidden>
+
+                    <div id="gifFileName" class="file-name">No images selected</div>
+
+                    <label for="gifDuration">Frame Duration (ms)</label>
+                    <input id="gifDuration" type="number" min="50" max="5000" step="50" value="500">
+
+                    <button id="createGif" class="panel-button">Create &amp; Download GIF</button>
+                    <div id="gifStatus" class="result"></div>
+                {% else %}
+                    <p class="panel-description">Log in to unlock the GIF maker.</p>
+                    <a class="panel-button" style="display:block;text-align:center;text-decoration:none;" href="{{ url_for('login', next='/editor') }}">Log In to Make GIFs</a>
+                {% endif %}
+            </section>
+
+        </aside>
+
+        <section class="workspace">
+            <div class="preview">
+                <div id="emptyState" class="empty-state">
+                    <div class="upload-icon">▶</div>
+                    <h2>No video selected</h2>
+                    <p>Upload a video to start editing</p>
+                    <button id="chooseVideo" class="upload-button">Choose Video</button>
+                </div>
+
+                <video id="video" controls playsinline preload="metadata" hidden></video>
+            </div>
+
+            <div class="player-bar">
+                <button id="playPause" class="play">▶</button>
+                <span id="time">00:00 / 00:00</span>
+            </div>
+
+            <div class="timeline">
+                <div class="timeline-toolbar">
+                    <div class="timeline-title">
+                        <strong>Timeline</strong>
+                        <span id="status">Ready</span>
+                    </div>
+
+                    <div class="timeline-actions">
+                        <span id="clipCount">0 clips</span>
+                        <button id="deleteSelected" class="delete-clip">Delete Selected</button>
+                    </div>
+                </div>
+
+                <div class="timeline-scroll">
+                    <div class="timeline-content">
+                        <div class="timeline-row">
+                            <div class="track-label">VIDEO</div>
+                            <div class="timeline-tracks-container" id="timelineContainer">
+                                <div id="playhead" class="playhead"></div>
+                                <div id="videoTrack" class="timeline-track video-track"></div>
+                            </div>
+                        </div>
+
+                        <div class="timeline-row">
+                            <div class="track-label">AUDIO</div>
+                            <div id="audioTrack" class="timeline-track audio-track">
+                                <span class="audio-placeholder">Audio track</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+</div>
+
+<body data-logged-in="{{ 'true' if logged_in else 'false' }}"></body>
+<script>
+    window.IS_LOGGED_IN = document.body.dataset.loggedIn === "true";
+
+    // Require login when visitors click the AI or GIF toolbar.
+    document.addEventListener("click", function (event) {
+        if (window.IS_LOGGED_IN) return;
+
+        const target = event.target;
+        if (!(target instanceof Element)) return;
+
+        const tool = target.closest('[data-panel="ai"], [data-panel="gif"]');
+        if (!tool) return;
+
+        event.preventDefault();
+        event.stopImmediatePropagation();
+
+        window.location.href = "{{ url_for('login', next='/editor') }}";
+    }, true);
+</script>
+
+
+{% if logged_in %}
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const gifImagesInput = document.getElementById("gifImagesInput");
+    const gifFileName = document.getElementById("gifFileName");
+    const createGifBtn = document.getElementById("createGif");
+    const gifDurationInput = document.getElementById("gifDuration");
+    const gifStatus = document.getElementById("gifStatus");
+
+    if (gifImagesInput) {
+        gifImagesInput.addEventListener("change", (e) => {
+            const files = e.target.files;
+            if (gifFileName) {
+                gifFileName.textContent = files && files.length > 0
+                    ? `${files.length} image(s) selected`
+                    : "No images selected";
+            }
+        });
+    }
+
+    if (createGifBtn) {
+        createGifBtn.addEventListener("click", async () => {
+            const files = gifImagesInput ? gifImagesInput.files : [];
+
+            if (!files || files.length === 0) {
+                alert("Please select images first!");
+                return;
+            }
+
+            if (typeof gifshot === "undefined") {
+                alert("gifshot library is not loaded.");
+                return;
+            }
+
+            if (gifStatus) gifStatus.textContent = "Processing images into GIF...";
+            createGifBtn.disabled = true;
+
+            try {
+                const imagePromises = Array.from(files).map((file) => {
+                    return new Promise((resolve, reject) => {
+                        const reader = new FileReader();
+                        reader.onload = (e) => resolve(e.target.result);
+                        reader.onerror = reject;
+                        reader.readAsDataURL(file);
+                    });
+                });
+
+                const imagesBase64 = await Promise.all(imagePromises);
+                const intervalSec = (parseInt(gifDurationInput?.value, 10) || 500) / 1000;
+
+                gifshot.createGIF({
+                    images: imagesBase64,
+                    interval: intervalSec,
+                    gifWidth: 400,
+                    gifHeight: 400
+                }, (obj) => {
+                    createGifBtn.disabled = false;
+
+                    if (!obj.error) {
+                        if (gifStatus) {
+                            gifStatus.innerHTML = "";
+
+                            const img = document.createElement("img");
+                            img.src = obj.image;
+                            img.style.cssText = "max-width:100%;border-radius:8px;margin-top:10px;display:block;";
+
+                            const a = document.createElement("a");
+                            a.href = obj.image;
+                            a.download = "animation.gif";
+                            a.className = "button primary";
+                            a.textContent = "Download GIF";
+                            a.style.cssText = "display:block;margin-top:10px;text-align:center;text-decoration:none;";
+
+                            gifStatus.appendChild(img);
+                            gifStatus.appendChild(a);
+                        }
+                    } else {
+                        if (gifStatus) gifStatus.textContent = "GIF generation failed.";
+                        alert("GIF Error: " + (obj.errorMsg || "Unknown error"));
+                    }
+                });
+            } catch (err) {
+                createGifBtn.disabled = false;
+                if (gifStatus) gifStatus.textContent = "Error reading files.";
+                console.error(err);
+            }
+        });
+    }
+});
+</script>
+{% endif %}
+
+<script src="{{ url_for('static', filename='js/editor.js') }}"></script>
+
+</body>
+</html>

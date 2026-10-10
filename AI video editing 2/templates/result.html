@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Video Result - AI Video Editing Assistant</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+    <style>
+
+        .result-page {
+            min-height: 100vh;
+            background: #080d18;
+            padding: 30px;
+        }
+
+        .result-container {
+            width: 100%;
+            max-width: 1000px;
+            margin: auto;
+        }
+
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .result-title {
+            font-size: 22px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .result-subtitle {
+            margin-top: 5px;
+            font-size: 12px;
+            color: #94a3b8;
+        }
+
+        .result-card {
+            background: #111827;
+            border: 1px solid #263247;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .video-result {
+            width: 100%;
+            max-height: 550px;
+            background: #020617;
+            border-radius: 8px;
+            display: block;
+        }
+
+        .result-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .result-button {
+            display: inline-block;
+            padding: 10px 18px;
+            border-radius: 6px;
+            border: 1px solid #263247;
+            background: #172033;
+            color: #e5e7eb;
+            text-decoration: none;
+            font-size: 12px;
+        }
+
+        .result-button.primary {
+            background: #6366f1;
+            border-color: #6366f1;
+            color: white;
+        }
+
+        .result-button:hover {
+            opacity: 0.9;
+        }
+
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .result-section-title {
+            color: #e5e7eb;
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .result-content {
+            background: #0b1220;
+            border: 1px solid #263247;
+            border-radius: 6px;
+            padding: 12px;
+            color: #94a3b8;
+            font-size: 11px;
+            line-height: 1.6;
+            min-height: 70px;
+            white-space: pre-wrap;
+        }
+
+        .empty-result {
+            text-align: center;
+            color: #64748b;
+            padding: 20px;
+        }
+
+        @media (max-width: 700px) {
+
+            .result-page {
+                padding: 15px;
+            }
+
+            .result-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .result-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .result-actions {
+                flex-direction: column;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="result-page">
+
+    <div class="result-container">
+
+
+        <!-- HEADER -->
+
+        <div class="result-header">
+
+            <div>
+
+                <div class="result-title">
+                    Edited Video
+                </div>
+
+                <div class="result-subtitle">
+                    Your video processing result
+                </div>
+
+            </div>
+
+
+            <a href="{{ url_for('editor') }}"
+               class="result-button">
+
+                Back to Editor
+
+            </a>
+
+        </div>
+
+
+
+        <!-- VIDEO RESULT -->
+
+        <div class="result-card">
+
+            {% if video_url %}
+
+                <video
+                    class="video-result"
+                    controls
+                    preload="metadata">
+
+                    <source
+                        src="{{ video_url }}"
+                        type="video/mp4">
+
+                    Your browser does not support
+                    video playback.
+
+                </video>
+
+            {% else %}
+
+                <div class="empty-result">
+
+                    No edited video is available yet.
+
+                </div>
+
+            {% endif %}
+
+
+
+            <div class="result-actions">
+
+                {% if video_url %}
+
+                    <a
+                        href="{{ video_url }}"
+                        download
+                        class="result-button primary">
+
+                        Download Final Video
+
+                    </a>
+
+                {% endif %}
+
+
+                <a
+                    href="{{ url_for('editor') }}"
+                    class="result-button">
+
+                    Continue Editing
+
+                </a>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- AI RESULTS -->
+
+        <div class="result-grid">
+
+
+            <!-- TITLE -->
+
+            <div class="result-card">
+
+                <div class="result-section-title">
+                    AI Generated Title
+                </div>
+
+                <div class="result-content">
+
+                    {% if ai_title %}
+
+                        {{ ai_title }}
+
+                    {% else %}
+
+                        No AI title generated yet.
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+
+
+            <!-- DESCRIPTION -->
+
+            <div class="result-card">
+
+                <div class="result-section-title">
+                    AI Description
+                </div>
+
+                <div class="result-content">
+
+                    {% if ai_description %}
+
+                        {{ ai_description }}
+
+                    {% else %}
+
+                        No AI description generated yet.
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+
+
+            <!-- HASHTAGS -->
+
+            <div class="result-card">
+
+                <div class="result-section-title">
+                    AI Hashtags
+                </div>
+
+                <div class="result-content">
+
+                    {% if ai_hashtags %}
+
+                        {{ ai_hashtags }}
+
+                    {% else %}
+
+                        No hashtags generated yet.
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+
+
+            <!-- CAPTIONS -->
+
+            <div class="result-card">
+
+                <div class="result-section-title">
+                    AI Captions
+                </div>
+
+                <div class="result-content">
+
+                    {% if ai_captions %}
+
+                        {{ ai_captions }}
+
+                    {% else %}
+
+                        No captions generated yet.
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+</div>
+
+</body>
+
+</html>
