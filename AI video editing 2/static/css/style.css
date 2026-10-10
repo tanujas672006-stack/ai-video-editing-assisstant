@@ -2901,7 +2901,8 @@ animation: none !important;
     grid-template-columns: 1fr !important; /* Forces 1 card per row on mobile */
   }
 }
-/* --- Mobile Editor Fix: Complete & Final --- */
+
+/* --- Mobile Editor Fix (Bottom Toolbar & Full Width) --- */
 @media (max-width: 768px) {
     .app {
         height: 100vh;
@@ -2917,6 +2918,7 @@ animation: none !important;
         flex-shrink: 0;
     }
 
+    /* Stack editor contents vertically: workspace on top, toolbar at bottom */
     .editor {
         display: flex;
         flex-direction: column;
@@ -2925,17 +2927,26 @@ animation: none !important;
         height: auto;
         overflow: hidden;
         position: relative;
+        margin-left: 0 !important;
+        padding-left: 0 !important;
+        left: 0 !important;
     }
 
+    /* Workspace takes full width with zero left offset */
     .workspace {
         flex: 1;
         width: 100% !important;
+        min-width: 0;
         height: auto;
         display: flex;
         flex-direction: column;
         overflow: hidden;
+        margin-left: 0 !important;
+        padding-left: 0 !important;
+        left: 0 !important;
     }
 
+    /* Bottom navigation toolbar */
     .toolbar {
         order: 2;
         width: 100% !important;
@@ -2964,6 +2975,8 @@ animation: none !important;
     .preview {
         flex: 1;
         width: 100%;
+        min-width: 0;
+        min-height: 0;
         padding: 8px;
         overflow: hidden;
     }
@@ -2976,17 +2989,63 @@ animation: none !important;
         object-fit: contain;
     }
 
+    .player-bar {
+        flex-shrink: 0;
+        min-width: 0;
+        padding: 0 8px;
+        gap: 8px;
+    }
+
     .timeline {
         height: 180px;
         min-height: 140px;
         flex-shrink: 0;
+        min-width: 0;
     }
 
+    .timeline-toolbar {
+        padding: 0 8px;
+        gap: 6px;
+    }
+
+    .timeline-title {
+        min-width: 0;
+        gap: 6px;
+    }
+
+    .timeline-actions {
+        flex-shrink: 0;
+        gap: 5px;
+    }
+
+    .timeline-scroll {
+        min-width: 0;
+        overflow: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .timeline-content {
+        min-width: 600px;
+    }
+
+    .timeline-row {
+        width: max-content;
+        min-width: 100%;
+    }
+
+    .timeline-tracks-container,
+    .video-track,
+    .audio-track {
+        min-width: 600px;
+    }
+
+    /* Side panel expands cleanly over the screen */
     .side-panel {
         top: 58px;
         bottom: 56px;
         left: 0;
         width: 100% !important;
+        min-width: 0;
         max-width: 100% !important;
         overflow-y: auto;
         z-index: 150;
@@ -2999,7 +3058,12 @@ animation: none !important;
         min-width: 100% !important;
     }
 
+    .workspace {
+        width: 100% !important;
+    }
+
     .side-panel {
+        left: 0;
         width: 100% !important;
         max-width: 100% !important;
     }
