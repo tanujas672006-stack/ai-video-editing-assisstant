@@ -334,19 +334,35 @@ document.addEventListener("DOMContentLoaded", () => {
     } 
   } 
  
-  function applyVideoFilterStyle(filterType) { 
-    if (!el.video) return; 
-    el.video.style.filter = "none"; 
-    switch (filterType) { 
-      case "grayscale": el.video.style.filter = "grayscale(100%)"; break; 
-      case "sepia": el.video.style.filter = "sepia(100%)"; break; 
-      case "bright": el.video.style.filter = "brightness(130%)"; break; 
-      case "contrast": el.video.style.filter = "contrast(150%)"; break; 
-      case "invert": el.video.style.filter = "invert(100%)"; break; 
-      case "blur": el.video.style.filter = "blur(4px)"; break; 
-      default: el.video.style.filter = "none"; break; 
-    } 
-  } 
+  
+function applyVideoFilterStyle(filterType) {
+  if (!el.video) return;
+
+  const filters = {
+    none: "none",
+    brightness: "brightness(130%)",
+    grayscale: "grayscale(100%)",
+    sepia: "sepia(100%)",
+    contrast: "contrast(150%)",
+    saturate: "saturate(180%)",
+    invert: "invert(100%)",
+    blur: "blur(3px)",
+    vintage: "sepia(45%) contrast(115%) brightness(95%)",
+    cool: "saturate(115%) hue-rotate(15deg)"
+  };
+
+  const selectedFilter = filters[filterType] ? filterType : "none";
+
+  el.video.style.filter = filters[selectedFilter];
+
+  const clip = state.clips[state.selectedClipIndex];
+  if (clip) clip.filter = selectedFilter;
+
+  document.querySelectorAll(".video-filter-btn").forEach((btn) => {
+    btn.classList.toggle("active", btn.dataset.filter === selectedFilter);
+  });
+}
+
  
   // Trim & Crop Handlers 
   if (el.trimVideoBtn) { 
@@ -901,4 +917,80 @@ document.querySelectorAll(".ai-button").forEach((btn) => {
       else alert("Select a clip to delete."); 
     }; 
   } 
-});  editor
+  
+  
+  // VIDEO FILTERS INSIDE THE EDIT PANEL
+  const addFilterButtons = () => {
+    const editPanel = document.getElementById("editPanel");
+    if (!editPanel) {
+      console.error("Edit panel not found");
+      return;
+    }
+
+    let bar = document.getElementById("videoFilterBar");
+
+    if (!bar) {
+      bar = document.createElement("div");
+      bar.id = "videoFilterBar";
+      bar.style.cssText =
+        "display:flex;flex-wrap:wrap;gap:8px;padding:12px;" +
+        "margin:12px 0;background:#171923;border-radius:10px;";
+
+      const heading = document.createElement("h3");
+      heading.textContent = "Video Filters";
+      heading.style.cssText = "width:100%;color:white;margin:0 0 8px;";
+      bar.appendChild(heading);
+
+      editPanel.appendChild(bar);
+    }
+
+    const filters = [
+      ["none", "Original"],
+      ["brightness", "Brightness"],
+      ["grayscale", "Grayscale"],
+      ["sepia", "Sepia"],
+      ["contrast", "Contrast"],
+      ["saturate", "Saturate"],
+      ["invert", "Invert"],
+      ["blur", "Blur"],
+      ["vintage", "Vintage"],
+      ["cool", "Cool"]
+    ];
+
+    bar.querySelectorAll(".video-filter-btn").forEach(btn => btn.remove());
+
+    filters.forEach(([filter, label]) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "video-filter-btn";
+      button.dataset.filter = filter;
+      button.textContent = label;
+
+      button.style.cssText =
+        "padding:9px 12px;background:#292d3a;color:white;" +
+        "border:1px solid #777;border-radius:7px;cursor:pointer;";
+
+      button.addEventListener("click", () => {
+        if (state.selectedClipIndex < 0 || !state.clips[state.selectedClipIndex]) {
+          status("Upload and select a video first.");
+          return;
+        }
+
+        applyVideoFilterStyle(filter);
+
+        bar.querySelectorAll(".video-filter-btn").forEach(btn => {
+          btn.style.background =
+            btn.dataset.filter === filter ? "#7657ff" : "#292d3a";
+        });
+
+        status(label + " filter applied.");
+      });
+
+      bar.appendChild(button);
+    });
+  };
+
+  addFilterButtons();
+
+
+});
